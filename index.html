@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Can I Park Here?</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    #map {
+      height: 300px;
+      width: 100%;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Can I Park Here?</h1>
+  <p>Upload a photo of a parking sign, and we’ll tell you if it’s legal to park right now.</p>
+  <input type="file" id="imageInput" accept="image/*" />
+  <button onclick="checkParking()">Check Parking Legality</button>
+  <p id="result"></p>
+  <canvas id="preview" style="display:none;"></canvas>
+
+  <!-- Google Maps container -->
+  <div id="map"></div>
+
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@2.1.1/dist/tesseract.min.js"></script>
+  <script src="script.js"></script>
+  <script>
+    let map;
+
+    function initMap() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(position => {
+          const userLocation = {
+            lat: position.coords.latitude,
+            lng: position.coords.longitude
+          };
+          map = new google.maps.Map(document.getElementById("map"), {
+            center: userLocation,
+            zoom: 16
+          });
+
+          new google.maps.Marker({
+            position: userLocation,
+            map: map,
+            title: "You are here"
+          });
+
+          // Example: Add other known parking restriction zones
+          const markers = [
+            { lat: userLocation.lat + 0.001, lng: userLocation.lng + 0.001, label: "🚫 No Parking Zone" },
+            { lat: userLocation.lat - 0.0015, lng: userLocation.lng - 0.0015, label: "✅ Safe Parking Zone" }
+          ];
+
+          markers.forEach(m => {
+            new google.maps.Marker({
+              position: { lat: m.lat, lng: m.lng },
+              map: map,
+              title: m.label,
+              icon: m.label.includes("🚫") ? "http://maps.google.com/mapfiles/ms/icons/red-dot.png" : "http://maps.google.com/mapfiles/ms/icons/green-dot.png"
+            });
+          });
+        });
+      } else {
+        document.getElementById("map").textContent = "Geolocation not supported.";
+      }
+    }
+  </script>
+  <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+  </script>
+</body>
+</html>
