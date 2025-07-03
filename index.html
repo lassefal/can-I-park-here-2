@@ -17,8 +17,14 @@
   <h1>Can I Park Here?</h1>
   <p>Upload a photo of a parking sign, and we’ll tell you if it’s legal to park right now.</p>
   <input type="file" id="imageInput" accept="image/*" />
-  <button onclick="checkParking()">Check Parking Legality</button>
-  <p id="result"></p>
+<button onclick="checkParking()">Check Parking Legality</button>
+
+<!-- 🚨 WARNING MESSAGE -->
+<div style="margin-top: 10px; padding: 10px; background: #fff3cd; color: #856404; border: 1px solid #ffeeba; border-radius: 5px;">
+  ⚠️ <strong>Warning:</strong> This result is based only on the sign image. It does NOT check local traffic laws. Always verify before parking.
+</div>
+
+<p id="result"></p>
   <canvas id="preview" style="display:none;"></canvas>
 
   <!-- Google Maps container -->
